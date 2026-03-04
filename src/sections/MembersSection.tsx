@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Search, Github, Linkedin, Shield, Code, Cpu, Globe, Filter } from 'lucide-react';
+import { 
+  Search, Github, Linkedin, Shield, Code, Cpu, Globe, Filter, 
+  BookOpen, X, Play, CheckCircle, Lock, ChevronRight, Award, Terminal,
+  Edit3, Save, Plus, Trash2
+} from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,73 +22,86 @@ interface Member {
   skills: string[];
 }
 
-const members: Member[] = [
+interface LearningModule {
+  id: number;
+  title: string;
+  description: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  duration: string;
+  lessons: number;
+  completed: boolean;
+  locked: boolean;
+  icon: typeof Shield;
+  content?: string;
+}
+
+const initialMembers: Member[] = [
   {
     id: 1,
-    name: 'A. Rhea',
+    name: 'Dhanuja',
     role: 'Security Lead',
     specialty: 'Penetration Testing',
     events: 12,
     points: 3200,
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80',
-    github: 'https://github.com',
-    linkedin: 'https://linkedin.com',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80 ',
+    github: 'https://github.com ',
+    linkedin: 'https://linkedin.com ',
     skills: ['Web Exploit', 'Network Security', 'OSCP'],
   },
   {
     id: 2,
-    name: 'D. Marc',
+    name: 'Kavi',
     role: 'CTF Player',
     specialty: 'Reverse Engineering',
     events: 9,
     points: 2800,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80',
-    github: 'https://github.com',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80 ',
+    github: 'https://github.com ',
     skills: ['Binary Exploitation', 'Assembly', 'Ghidra'],
   },
   {
     id: 3,
-    name: 'S. Joon',
+    name: 'Sanjay',
     role: 'AI Research',
     specialty: 'ML Security',
     events: 7,
     points: 2500,
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80',
-    github: 'https://github.com',
-    linkedin: 'https://linkedin.com',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80 ',
+    github: 'https://github.com ',
+    linkedin: 'https://linkedin.com ',
     skills: ['Adversarial ML', 'Python', 'TensorFlow'],
   },
   {
     id: 4,
-    name: 'L. Kira',
+    name: 'Tharik',
     role: 'Developer',
     specialty: 'Secure Coding',
     events: 10,
     points: 2900,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80',
-    github: 'https://github.com',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80 ',
+    github: 'https://github.com ',
     skills: ['Rust', 'Go', 'Smart Contracts'],
   },
   {
     id: 5,
-    name: 'M. Theo',
+    name: 'Rohit',
     role: 'Community',
     specialty: 'Event Organization',
     events: 15,
     points: 3500,
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80',
-    linkedin: 'https://linkedin.com',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80 ',
+    linkedin: 'https://linkedin.com ',
     skills: ['Leadership', 'Public Speaking', 'Mentoring'],
   },
   {
     id: 6,
-    name: 'P. Nico',
+    name: 'Aura',
     role: 'Mentor',
     specialty: 'Cryptography',
     events: 6,
     points: 2100,
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80',
-    github: 'https://github.com',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80 ',
+    github: 'https://github.com ',
     skills: ['Cryptanalysis', 'Mathematics', 'Zero-Knowledge'],
   },
 ];
@@ -97,12 +114,93 @@ const roleFilters = [
   { key: 'ops', label: 'Community', icon: Globe },
 ];
 
+const iconMap: { [key: string]: typeof Shield } = {
+  Shield,
+  Globe,
+  Terminal,
+  Code,
+  Cpu,
+};
+
+const initialLearningModules: LearningModule[] = [
+  {
+    id: 1,
+    title: 'Web Security Fundamentals',
+    description: 'Master the basics of web application security, including OWASP Top 10 vulnerabilities and secure coding practices.',
+    difficulty: 'Beginner',
+    duration: '4 weeks',
+    lessons: 12,
+    completed: true,
+    locked: false,
+    icon: Globe,
+    content: 'Module content for Web Security...',
+  },
+  {
+    id: 2,
+    title: 'Advanced Penetration Testing',
+    description: 'Deep dive into network penetration testing, exploitation techniques, and post-exploitation methodologies.',
+    difficulty: 'Advanced',
+    duration: '6 weeks',
+    lessons: 18,
+    completed: false,
+    locked: false,
+    icon: Terminal,
+    content: 'Module content for Penetration Testing...',
+  },
+  {
+    id: 3,
+    title: 'Reverse Engineering Mastery',
+    description: 'Learn to analyze and reverse engineer binary applications using industry-standard tools like Ghidra and IDA Pro.',
+    difficulty: 'Intermediate',
+    duration: '5 weeks',
+    lessons: 15,
+    completed: false,
+    locked: true,
+    icon: Code,
+    content: 'Module content for Reverse Engineering...',
+  },
+  {
+    id: 4,
+    title: 'AI Security & Adversarial ML',
+    description: 'Explore vulnerabilities in machine learning systems and learn to defend against adversarial attacks.',
+    difficulty: 'Intermediate',
+    duration: '4 weeks',
+    lessons: 10,
+    completed: false,
+    locked: true,
+    icon: Cpu,
+    content: 'Module content for AI Security...',
+  },
+  {
+    id: 5,
+    title: 'Cryptography & Zero-Knowledge Proofs',
+    description: 'Understanding modern cryptographic protocols and implementing zero-knowledge proof systems.',
+    difficulty: 'Advanced',
+    duration: '8 weeks',
+    lessons: 24,
+    completed: false,
+    locked: true,
+    icon: Shield,
+    content: 'Module content for Cryptography...',
+  },
+];
+
 export default function MembersSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeRole, setActiveRole] = useState('all');
+  const [showCyberLearn, setShowCyberLearn] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // States that can be updated
+  const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [learningModules, setLearningModules] = useState<LearningModule[]>(initialLearningModules);
+  
+  // Edit form state
+  const [editForm, setEditForm] = useState<Partial<LearningModule>>({});
 
   const filteredMembers = members.filter(member => {
     const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -176,6 +274,73 @@ export default function MembersSection() {
     return () => ctx.revert();
   }, []);
 
+  // UPDATE FUNCTIONS
+  const handleEditModule = (module: LearningModule) => {
+    setEditForm({ ...module });
+    setIsEditing(true);
+  };
+
+  const handleSaveModule = () => {
+    if (editForm.id) {
+      setLearningModules(prev => prev.map(m => 
+        m.id === editForm.id ? { ...m, ...editForm } as LearningModule : m
+      ));
+      setIsEditing(false);
+      setEditForm({});
+      // Update selected module if currently viewing
+      if (selectedModule?.id === editForm.id) {
+        setSelectedModule({ ...selectedModule, ...editForm } as LearningModule);
+      }
+    }
+  };
+
+  const handleDeleteModule = (id: number) => {
+    if (confirm('Are you sure you want to delete this module?')) {
+      setLearningModules(prev => prev.filter(m => m.id !== id));
+      if (selectedModule?.id === id) {
+        setSelectedModule(null);
+      }
+    }
+  };
+
+  const handleAddModule = () => {
+    const newModule: LearningModule = {
+      id: Date.now(),
+      title: 'New Module',
+      description: 'Module description...',
+      difficulty: 'Beginner',
+      duration: '4 weeks',
+      lessons: 10,
+      completed: false,
+      locked: false,
+      icon: Shield,
+      content: '',
+    };
+    setLearningModules(prev => [...prev, newModule]);
+    handleEditModule(newModule);
+  };
+
+  const handleToggleComplete = (id: number) => {
+    setLearningModules(prev => prev.map(m => 
+      m.id === id ? { ...m, completed: !m.completed } : m
+    ));
+  };
+
+  const handleToggleLock = (id: number) => {
+    setLearningModules(prev => prev.map(m => 
+      m.id === id ? { ...m, locked: !m.locked } : m
+    ));
+  };
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'Beginner': return 'text-[#39FF14] border-[#39FF14]/50 bg-[#39FF14]/10';
+      case 'Intermediate': return 'text-yellow-400 border-yellow-400/50 bg-yellow-400/10';
+      case 'Advanced': return 'text-red-400 border-red-400/50 bg-red-400/10';
+      default: return 'text-[#39FF14]';
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -204,7 +369,7 @@ export default function MembersSection() {
           </div>
 
           {/* Role filters */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {roleFilters.map((filter) => (
               <button
                 key={filter.key}
@@ -219,6 +384,15 @@ export default function MembersSection() {
                 {filter.label}
               </button>
             ))}
+            
+            {/* CyberLearn Button - NEXT TO COMMUNITY FILTER */}
+            <button
+              onClick={() => setShowCyberLearn(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all duration-300 group ml-2"
+            >
+              <BookOpen className="w-3 h-3 group-hover:scale-110 transition-transform" />
+              CyberLearn
+            </button>
           </div>
         </div>
       </div>
@@ -313,6 +487,344 @@ export default function MembersSection() {
           ))}
         </div>
       </div>
+
+      {/* CyberLearn Modal */}
+      {showCyberLearn && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-[#05060B]/95 backdrop-blur-sm"
+            onClick={() => {
+              if (!isEditing) {
+                setShowCyberLearn(false);
+                setSelectedModule(null);
+              }
+            }}
+          />
+          
+          <div className="relative w-full max-w-5xl h-[80vh] cyber-card rounded-lg overflow-hidden bg-[#0B0E14] border border-[#39FF14]/30 flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-[#39FF14]/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#39FF14]/20 rounded-lg flex items-center justify-center border border-[#39FF14]">
+                  <BookOpen className="w-5 h-5 text-[#39FF14]" />
+                </div>
+                <div>
+                  <h3 className="font-orbitron font-bold text-xl text-white">CyberLearn</h3>
+                  <p className="font-mono text-xs text-[#A6A9B6]">Master cybersecurity skills</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                {/* Add Module Button */}
+                {!selectedModule && !isEditing && (
+                  <button
+                    onClick={handleAddModule}
+                    className="flex items-center gap-2 px-3 py-2 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Module
+                  </button>
+                )}
+                
+                <button
+                  onClick={() => {
+                    setShowCyberLearn(false);
+                    setSelectedModule(null);
+                    setIsEditing(false);
+                  }}
+                  className="w-8 h-8 flex items-center justify-center bg-[#0B0E14] border border-[#39FF14]/30 rounded-full text-[#A6A9B6] hover:text-[#39FF14] hover:border-[#39FF14] transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {!selectedModule && !isEditing ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {learningModules.map((module) => (
+                    <div
+                      key={module.id}
+                      className="cyber-card corner-brackets rounded-lg p-5 transition-all duration-300 hover:border-[#39FF14]/60 hover:translate-y-[-4px] group"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div 
+                          onClick={() => handleToggleLock(module.id)}
+                          className={`w-12 h-12 rounded-lg flex items-center justify-center border cursor-pointer transition-all ${
+                            module.completed ? 'bg-[#39FF14]/20 border-[#39FF14]' : 
+                            module.locked ? 'bg-[#A6A9B6]/10 border-[#A6A9B6]/30' : 
+                            'bg-[#39FF14]/10 border-[#39FF14]/50'
+                          }`}
+                        >
+                          {module.locked ? (
+                            <Lock className="w-6 h-6 text-[#A6A9B6]" />
+                          ) : module.completed ? (
+                            <CheckCircle className="w-6 h-6 text-[#39FF14]" />
+                          ) : (
+                            <module.icon className="w-6 h-6 text-[#39FF14]" />
+                          )}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 
+                              onClick={() => !module.locked && setSelectedModule(module)}
+                              className={`font-orbitron font-bold text-white ${!module.locked && 'cursor-pointer hover:text-[#39FF14]'} transition-colors`}
+                            >
+                              {module.title}
+                            </h4>
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditModule(module);
+                                }}
+                                className="p-1 text-[#A6A9B6] hover:text-[#39FF14] transition-colors"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteModule(module.id);
+                                }}
+                                className="p-1 text-[#A6A9B6] hover:text-red-400 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                          <p className="font-mono text-xs text-[#A6A9B6] mb-3 line-clamp-2">
+                            {module.description}
+                          </p>
+                          
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className={`px-2 py-1 rounded text-[10px] font-mono uppercase border ${getDifficultyColor(module.difficulty)}`}>
+                              {module.difficulty}
+                            </span>
+                            <span className="font-mono text-xs text-[#A6A9B6]">{module.duration}</span>
+                            <span className="font-mono text-xs text-[#A6A9B6]">{module.lessons} lessons</span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <button 
+                              onClick={() => !module.locked && setSelectedModule(module)}
+                              className="flex items-center gap-1 font-mono text-xs text-[#39FF14] hover:gap-2 transition-all"
+                            >
+                              {module.completed ? 'Review Module' : module.locked ? 'Locked' : 'Start Learning'}
+                              {!module.locked && <ChevronRight className="w-3 h-3" />}
+                            </button>
+                            
+                            {/* Quick Toggle Complete */}
+                            {!module.locked && (
+                              <button
+                                onClick={() => handleToggleComplete(module.id)}
+                                className={`text-xs font-mono ${module.completed ? 'text-[#39FF14]' : 'text-[#A6A9B6]'} hover:text-[#39FF14]`}
+                              >
+                                {module.completed ? 'Completed' : 'Mark Complete'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : isEditing ? (
+                /* EDIT MODE */
+                <div className="animate-in fade-in duration-300 max-w-2xl mx-auto">
+                  <div className="flex items-center justify-between mb-6">
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setEditForm({});
+                      }}
+                      className="flex items-center gap-2 font-mono text-sm text-[#A6A9B6] hover:text-[#39FF14] transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4 rotate-180" />
+                      Back
+                    </button>
+                    <h3 className="font-orbitron font-bold text-white">Edit Module</h3>
+                  </div>
+
+                  <div className="cyber-card corner-brackets rounded-lg p-6 space-y-4">
+                    <div>
+                      <label className="block font-mono text-xs text-[#A6A9B6] mb-2">Title</label>
+                      <input
+                        type="text"
+                        value={editForm.title || ''}
+                        onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                        className="w-full px-4 py-2 bg-[#05060B] border border-[#39FF14]/30 rounded-lg font-mono text-white focus:border-[#39FF14] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-mono text-xs text-[#A6A9B6] mb-2">Description</label>
+                      <textarea
+                        value={editForm.description || ''}
+                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                        rows={3}
+                        className="w-full px-4 py-2 bg-[#05060B] border border-[#39FF14]/30 rounded-lg font-mono text-white focus:border-[#39FF14] focus:outline-none resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block font-mono text-xs text-[#A6A9B6] mb-2">Difficulty</label>
+                        <select
+                          value={editForm.difficulty || 'Beginner'}
+                          onChange={(e) => setEditForm({ ...editForm, difficulty: e.target.value as any })}
+                          className="w-full px-4 py-2 bg-[#05060B] border border-[#39FF14]/30 rounded-lg font-mono text-white focus:border-[#39FF14] focus:outline-none"
+                        >
+                          <option value="Beginner">Beginner</option>
+                          <option value="Intermediate">Intermediate</option>
+                          <option value="Advanced">Advanced</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block font-mono text-xs text-[#A6A9B6] mb-2">Duration</label>
+                        <input
+                          type="text"
+                          value={editForm.duration || ''}
+                          onChange={(e) => setEditForm({ ...editForm, duration: e.target.value })}
+                          className="w-full px-4 py-2 bg-[#05060B] border border-[#39FF14]/30 rounded-lg font-mono text-white focus:border-[#39FF14] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-mono text-xs text-[#A6A9B6] mb-2">Lessons</label>
+                        <input
+                          type="number"
+                          value={editForm.lessons || 0}
+                          onChange={(e) => setEditForm({ ...editForm, lessons: parseInt(e.target.value) })}
+                          className="w-full px-4 py-2 bg-[#05060B] border border-[#39FF14]/30 rounded-lg font-mono text-white focus:border-[#39FF14] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-4">
+                      <button
+                        onClick={handleSaveModule}
+                        className="flex items-center gap-2 px-6 py-3 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-orbitron font-bold text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all"
+                      >
+                        <Save className="w-4 h-4" />
+                        Save Changes
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsEditing(false);
+                          setEditForm({});
+                        }}
+                        className="px-6 py-3 bg-[#0B0E14] border border-[#A6A9B6]/30 rounded-lg font-mono text-sm text-[#A6A9B6] hover:border-[#39FF14] hover:text-[#39FF14] transition-all"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* MODULE DETAIL VIEW */
+                <div className="animate-in fade-in duration-300">
+                  <button
+                    onClick={() => setSelectedModule(null)}
+                    className="flex items-center gap-2 mb-4 font-mono text-sm text-[#A6A9B6] hover:text-[#39FF14] transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4 rotate-180" />
+                    Back to Modules
+                  </button>
+
+                  <div className="cyber-card corner-brackets rounded-lg p-6 mb-6">
+                    <div className="flex items-start justify-between mb-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-16 h-16 bg-[#39FF14]/20 rounded-lg flex items-center justify-center border border-[#39FF14]">
+                          <selectedModule.icon className="w-8 h-8 text-[#39FF14]" />
+                        </div>
+                        <div>
+                          <h3 className="font-orbitron font-bold text-2xl text-white mb-2">{selectedModule.title}</h3>
+                          <div className="flex items-center gap-3">
+                            <span className={`px-3 py-1 rounded text-xs font-mono uppercase border ${getDifficultyColor(selectedModule.difficulty)}`}>
+                              {selectedModule.difficulty}
+                            </span>
+                            <span className="font-mono text-sm text-[#A6A9B6]">{selectedModule.duration}</span>
+                            <span className="font-mono text-sm text-[#A6A9B6]">{selectedModule.lessons} lessons</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Edit button in detail view */}
+                      <button
+                        onClick={() => handleEditModule(selectedModule)}
+                        className="flex items-center gap-2 px-3 py-2 bg-[#39FF14]/10 border border-[#39FF14]/30 rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14]/20 transition-all"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        Edit
+                      </button>
+                    </div>
+
+                    <p className="font-mono text-sm text-[#A6A9B6] mb-6 leading-relaxed">
+                      {selectedModule.description}
+                    </p>
+
+                    <div className="flex gap-3">
+                      <button className="flex items-center gap-2 px-6 py-3 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-orbitron font-bold text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all">
+                        <Play className="w-4 h-4" />
+                        {selectedModule.completed ? 'Continue Learning' : 'Start Module'}
+                      </button>
+                      <button 
+                        onClick={() => handleToggleComplete(selectedModule.id)}
+                        className={`px-6 py-3 border rounded-lg font-mono text-sm transition-all ${
+                          selectedModule.completed 
+                            ? 'bg-[#39FF14]/10 border-[#39FF14] text-[#39FF14]' 
+                            : 'bg-[#0B0E14] border-[#39FF14]/30 text-[#A6A9B6] hover:border-[#39FF14] hover:text-[#39FF14]'
+                        }`}
+                      >
+                        {selectedModule.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Progress Overview */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="cyber-card corner-brackets p-4 rounded-lg text-center">
+                      <div className="font-orbitron font-bold text-2xl text-[#39FF14]">
+                        {selectedModule.completed ? '100%' : '0%'}
+                      </div>
+                      <div className="font-mono text-xs text-[#A6A9B6]">Progress</div>
+                    </div>
+                    <div className="cyber-card corner-brackets p-4 rounded-lg text-center">
+                      <div className="font-orbitron font-bold text-2xl text-white">
+                        {selectedModule.completed ? selectedModule.lessons : 0}/{selectedModule.lessons}
+                      </div>
+                      <div className="font-mono text-xs text-[#A6A9B6]">Lessons Completed</div>
+                    </div>
+                    <div className="cyber-card corner-brackets p-4 rounded-lg text-center">
+                      <div className="font-orbitron font-bold text-2xl text-white">
+                        {selectedModule.locked ? 'Locked' : 'Unlocked'}
+                      </div>
+                      <div className="font-mono text-xs text-[#A6A9B6]">Status</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Stats */}
+            <div className="p-4 border-t border-[#39FF14]/20 bg-[#05060B]/50">
+              <div className="flex items-center justify-between font-mono text-xs text-[#A6A9B6]">
+                <div className="flex items-center gap-4">
+                  <span>Total Modules: {learningModules.length}</span>
+                  <span>Completed: {learningModules.filter(m => m.completed).length}</span>
+                  <span>Locked: {learningModules.filter(m => m.locked).length}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>Current Streak:</span>
+                  <span className="text-[#39FF14]">5 days 🔥</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
