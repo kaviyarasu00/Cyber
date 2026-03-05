@@ -241,7 +241,7 @@ const events: Event[] = [
     time: '6:00PM',
     description: 'Team-based web application penetration testing. Prizes for top 3 teams. Advanced persistence and privilege escalation challenges.',
     participants: 342,
-    image: 'https://img.sanishtech.com/u/69b1f5c1f7b88a1e459a5865cc8e1ba5.png',
+    image: 'https://cdn.phototourl.com/uploads/2026-03-05-2fb28608-f50b-429e-b13d-a9435dee0f7b.png',
     eventDate: '2025-03-07T18:00:00Z',
     category: 'hackathon',
     maxParticipants: 500,
