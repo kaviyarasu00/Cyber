@@ -4,7 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   Search, Github, Linkedin, Shield, Code, Cpu, Globe, Filter, 
   BookOpen, X, Play, CheckCircle, Lock, ChevronRight, Award, Terminal,
-  Edit3, Save, Plus, Trash2
+  Edit3, Save, Plus, Trash2, Trophy, Star, Medal, Crown, Sparkles,
+  FileBadge, ScrollText, Zap, Target, Flame, Gem
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -35,6 +36,27 @@ interface LearningModule {
   content?: string;
 }
 
+interface Badge {
+  id: number;
+  name: string;
+  description: string;
+  icon: typeof Trophy;
+  tier: 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Special';
+  unlocked: boolean;
+  unlockedDate?: string;
+  rarity: number;
+}
+
+interface Certificate {
+  id: number;
+  title: string;
+  issuer: string;
+  date: string;
+  credentialId: string;
+  icon: typeof ScrollText;
+  color: string;
+}
+
 const initialMembers: Member[] = [
   {
     id: 1,
@@ -43,9 +65,9 @@ const initialMembers: Member[] = [
     specialty: 'Penetration Testing',
     events: 12,
     points: 3200,
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80 ',
-    github: 'https://github.com ',
-    linkedin: 'https://linkedin.com ',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80',
+    github: 'https://github.com',
+    linkedin: 'https://linkedin.com',
     skills: ['Web Exploit', 'Network Security', 'OSCP'],
   },
   {
@@ -55,8 +77,8 @@ const initialMembers: Member[] = [
     specialty: 'Reverse Engineering',
     events: 9,
     points: 2800,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80 ',
-    github: 'https://github.com ',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80',
+    github: 'https://github.com',
     skills: ['Binary Exploitation', 'Assembly', 'Ghidra'],
   },
   {
@@ -66,9 +88,9 @@ const initialMembers: Member[] = [
     specialty: 'ML Security',
     events: 7,
     points: 2500,
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80 ',
-    github: 'https://github.com ',
-    linkedin: 'https://linkedin.com ',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80',
+    github: 'https://github.com',
+    linkedin: 'https://linkedin.com',
     skills: ['Adversarial ML', 'Python', 'TensorFlow'],
   },
   {
@@ -78,8 +100,8 @@ const initialMembers: Member[] = [
     specialty: 'Secure Coding',
     events: 10,
     points: 2900,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80 ',
-    github: 'https://github.com ',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80',
+    github: 'https://github.com',
     skills: ['Rust', 'Go', 'Smart Contracts'],
   },
   {
@@ -89,8 +111,8 @@ const initialMembers: Member[] = [
     specialty: 'Event Organization',
     events: 15,
     points: 3500,
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80 ',
-    linkedin: 'https://linkedin.com ',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80',
+    linkedin: 'https://linkedin.com',
     skills: ['Leadership', 'Public Speaking', 'Mentoring'],
   },
   {
@@ -100,8 +122,8 @@ const initialMembers: Member[] = [
     specialty: 'Cryptography',
     events: 6,
     points: 2100,
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80 ',
-    github: 'https://github.com ',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80',
+    github: 'https://github.com',
     skills: ['Cryptanalysis', 'Mathematics', 'Zero-Knowledge'],
   },
 ];
@@ -185,6 +207,135 @@ const initialLearningModules: LearningModule[] = [
   },
 ];
 
+const initialBadges: Badge[] = [
+  {
+    id: 1,
+    name: 'First Blood',
+    description: 'Completed your first CTF challenge',
+    icon: Target,
+    tier: 'Bronze',
+    unlocked: true,
+    unlockedDate: '2024-01-15',
+    rarity: 85,
+  },
+  {
+    id: 2,
+    name: 'Bug Hunter',
+    description: 'Found and reported 5 valid security vulnerabilities',
+    icon: Shield,
+    tier: 'Silver',
+    unlocked: true,
+    unlockedDate: '2024-02-20',
+    rarity: 45,
+  },
+  {
+    id: 3,
+    name: 'Code Breaker',
+    description: 'Solved 10 cryptography challenges',
+    icon: Lock,
+    tier: 'Gold',
+    unlocked: true,
+    unlockedDate: '2024-03-10',
+    rarity: 25,
+  },
+  {
+    id: 4,
+    name: 'Elite Hacker',
+    description: 'Reached top 10 in global CTF leaderboard',
+    icon: Crown,
+    tier: 'Platinum',
+    unlocked: false,
+    rarity: 5,
+  },
+  {
+    id: 5,
+    name: 'Zero Day',
+    description: 'Discovered a critical zero-day vulnerability',
+    icon: Zap,
+    tier: 'Special',
+    unlocked: false,
+    rarity: 1,
+  },
+  {
+    id: 6,
+    name: 'Team Player',
+    description: 'Participated in 10 team events',
+    icon: Star,
+    tier: 'Silver',
+    unlocked: true,
+    unlockedDate: '2024-01-28',
+    rarity: 60,
+  },
+  {
+    id: 7,
+    name: 'Mentor',
+    description: 'Mentored 5 new club members',
+    icon: Sparkles,
+    tier: 'Gold',
+    unlocked: true,
+    unlockedDate: '2024-03-01',
+    rarity: 30,
+  },
+  {
+    id: 8,
+    name: 'Speed Demon',
+    description: 'Completed a challenge in under 5 minutes',
+    icon: Flame,
+    tier: 'Bronze',
+    unlocked: true,
+    unlockedDate: '2024-02-14',
+    rarity: 70,
+  },
+  {
+    id: 9,
+    name: 'Diamond Hand',
+    description: 'Maintained 30-day learning streak',
+    icon: Gem,
+    tier: 'Gold',
+    unlocked: false,
+    rarity: 15,
+  },
+  {
+    id: 10,
+    name: 'Grand Master',
+    description: 'Completed all learning modules',
+    icon: Trophy,
+    tier: 'Platinum',
+    unlocked: false,
+    rarity: 3,
+  },
+];
+
+const initialCertificates: Certificate[] = [
+  {
+    id: 1,
+    title: 'Certified Ethical Hacker (CEH)',
+    issuer: 'EC-Council',
+    date: '2024-02-15',
+    credentialId: 'ECC-2024-8842',
+    icon: FileBadge,
+    color: '#39FF14',
+  },
+  {
+    id: 2,
+    title: 'Offensive Security Certified Professional',
+    issuer: 'Offensive Security',
+    date: '2024-03-20',
+    credentialId: 'OSCP-2024-1156',
+    icon: ScrollText,
+    color: '#FFD700',
+  },
+  {
+    id: 3,
+    title: 'AI Security Specialist',
+    issuer: 'CyberLearn Academy',
+    date: '2024-01-10',
+    credentialId: 'CAS-2024-0092',
+    icon: Award,
+    color: '#00BFFF',
+  },
+];
+
 export default function MembersSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -192,12 +343,17 @@ export default function MembersSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeRole, setActiveRole] = useState('all');
   const [showCyberLearn, setShowCyberLearn] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeRewardTab, setActiveRewardTab] = useState<'badges' | 'certificates'>('badges');
   
   // States that can be updated
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [learningModules, setLearningModules] = useState<LearningModule[]>(initialLearningModules);
+  const [badges, setBadges] = useState<Badge[]>(initialBadges);
+  const [certificates, setCertificates] = useState<Certificate[]>(initialCertificates);
   
   // Edit form state
   const [editForm, setEditForm] = useState<Partial<LearningModule>>({});
@@ -341,6 +497,25 @@ export default function MembersSection() {
     }
   };
 
+  const getTierColor = (tier: string) => {
+    switch (tier) {
+      case 'Bronze': return 'from-orange-700 to-orange-900 border-orange-600 text-orange-400';
+      case 'Silver': return 'from-slate-400 to-slate-600 border-slate-400 text-slate-300';
+      case 'Gold': return 'from-yellow-500 to-yellow-700 border-yellow-500 text-yellow-400';
+      case 'Platinum': return 'from-cyan-400 to-blue-600 border-cyan-400 text-cyan-300';
+      case 'Special': return 'from-purple-500 to-pink-600 border-purple-500 text-purple-400';
+      default: return 'from-[#39FF14] to-[#39FF14]/50 border-[#39FF14] text-[#39FF14]';
+    }
+  };
+
+  const getRarityLabel = (rarity: number) => {
+    if (rarity <= 5) return 'Legendary';
+    if (rarity <= 15) return 'Epic';
+    if (rarity <= 30) return 'Rare';
+    if (rarity <= 60) return 'Uncommon';
+    return 'Common';
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -385,13 +560,22 @@ export default function MembersSection() {
               </button>
             ))}
             
-            {/* CyberLearn Button - NEXT TO COMMUNITY FILTER */}
+            {/* CyberLearn Button */}
             <button
               onClick={() => setShowCyberLearn(true)}
-              className="flex items-center gap-2 px-3 py-2 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all duration-300 group ml-2"
+              className="flex items-center gap-2 px-3 py-2 bg-[#39FF14]/20 border border-[#39FF14] rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all duration-300 group"
             >
               <BookOpen className="w-3 h-3 group-hover:scale-110 transition-transform" />
               CyberLearn
+            </button>
+
+            {/* Rewards Button - NEXT TO CYBERLEARN */}
+            <button
+              onClick={() => setShowRewards(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#39FF14]/20 to-[#39FF14]/10 border border-[#39FF14] rounded-lg font-mono text-xs text-[#39FF14] hover:bg-[#39FF14] hover:text-black transition-all duration-300 group"
+            >
+              <Trophy className="w-3 h-3 group-hover:scale-110 transition-transform" />
+              Rewards
             </button>
           </div>
         </div>
@@ -819,6 +1003,262 @@ export default function MembersSection() {
                 <div className="flex items-center gap-2">
                   <span>Current Streak:</span>
                   <span className="text-[#39FF14]">5 days 🔥</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rewards Modal */}
+      {showRewards && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-[#05060B]/95 backdrop-blur-sm"
+            onClick={() => {
+              setShowRewards(false);
+              setSelectedBadge(null);
+            }}
+          />
+          
+          <div className="relative w-full max-w-5xl h-[80vh] cyber-card rounded-lg overflow-hidden bg-[#0B0E14] border border-[#39FF14]/30 flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-[#39FF14]/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#39FF14]/30 to-[#39FF14]/10 rounded-lg flex items-center justify-center border border-[#39FF14]">
+                  <Trophy className="w-5 h-5 text-[#39FF14]" />
+                </div>
+                <div>
+                  <h3 className="font-orbitron font-bold text-xl text-white">Rewards Center</h3>
+                  <p className="font-mono text-xs text-[#A6A9B6]">Achievements & Certifications</p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => {
+                  setShowRewards(false);
+                  setSelectedBadge(null);
+                }}
+                className="w-8 h-8 flex items-center justify-center bg-[#0B0E14] border border-[#39FF14]/30 rounded-full text-[#A6A9B6] hover:text-[#39FF14] hover:border-[#39FF14] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-1 p-4 border-b border-[#39FF14]/20 bg-[#05060B]/30">
+              <button
+                onClick={() => {
+                  setActiveRewardTab('badges');
+                  setSelectedBadge(null);
+                }}
+                className={`flex items-center gap-2 px-6 py-2 rounded-lg font-mono text-sm transition-all ${
+                  activeRewardTab === 'badges'
+                    ? 'bg-[#39FF14]/20 text-[#39FF14] border border-[#39FF14]'
+                    : 'text-[#A6A9B6] hover:text-[#39FF14] border border-transparent'
+                }`}
+              >
+                <Medal className="w-4 h-4" />
+                Badges ({badges.filter(b => b.unlocked).length}/{badges.length})
+              </button>
+              <button
+                onClick={() => {
+                  setActiveRewardTab('certificates');
+                  setSelectedBadge(null);
+                }}
+                className={`flex items-center gap-2 px-6 py-2 rounded-lg font-mono text-sm transition-all ${
+                  activeRewardTab === 'certificates'
+                    ? 'bg-[#39FF14]/20 text-[#39FF14] border border-[#39FF14]'
+                    : 'text-[#A6A9B6] hover:text-[#39FF14] border border-transparent'
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                Certificates ({certificates.length})
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {activeRewardTab === 'badges' ? (
+                !selectedBadge ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    {badges.map((badge, index) => (
+                      <div
+                        key={badge.id}
+                        onClick={() => setSelectedBadge(badge)}
+                        className={`cyber-card corner-brackets rounded-lg p-4 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-[#39FF14]/60 group ${
+                          !badge.unlocked ? 'opacity-60 grayscale' : ''
+                        }`}
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                      >
+                        <div className={`w-full aspect-square rounded-lg bg-gradient-to-br ${getTierColor(badge.tier)} border-2 flex flex-col items-center justify-center mb-3 relative overflow-hidden`}>
+                          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30"></div>
+                          <badge.icon className={`w-10 h-10 ${badge.unlocked ? 'text-white' : 'text-[#A6A9B6]'} relative z-10`} />
+                          {badge.unlocked && (
+                            <div className="absolute top-1 right-1">
+                              <Sparkles className="w-4 h-4 text-white animate-pulse" />
+                            </div>
+                          )}
+                        </div>
+                        <h4 className="font-orbitron font-bold text-sm text-white text-center mb-1 group-hover:text-[#39FF14] transition-colors">
+                          {badge.name}
+                        </h4>
+                        <p className="font-mono text-[10px] text-[#A6A9B6] text-center line-clamp-2">
+                          {badge.tier}
+                        </p>
+                        {!badge.unlocked && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-[#05060B]/80 rounded-lg">
+                            <Lock className="w-6 h-6 text-[#A6A9B6]" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Badge Detail View */
+                  <div className="animate-in fade-in duration-300 max-w-2xl mx-auto">
+                    <button
+                      onClick={() => setSelectedBadge(null)}
+                      className="flex items-center gap-2 mb-6 font-mono text-sm text-[#A6A9B6] hover:text-[#39FF14] transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4 rotate-180" />
+                      Back to Badges
+                    </button>
+
+                    <div className="cyber-card corner-brackets rounded-lg p-8 text-center">
+                      <div className={`w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br ${getTierColor(selectedBadge.tier)} border-4 flex items-center justify-center mb-6 relative overflow-hidden shadow-2xl shadow-${selectedBadge.tier === 'Special' ? 'purple' : selectedBadge.tier === 'Platinum' ? 'cyan' : selectedBadge.tier === 'Gold' ? 'yellow' : selectedBadge.tier === 'Silver' ? 'slate' : 'orange'}-500/20`}>
+                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-40"></div>
+                        <selectedBadge.icon className="w-16 h-16 text-white relative z-10 drop-shadow-lg" />
+                        {selectedBadge.unlocked && (
+                          <div className="absolute -top-2 -right-2">
+                            <div className="w-8 h-8 bg-[#39FF14] rounded-full flex items-center justify-center border-2 border-[#05060B]">
+                              <CheckCircle className="w-5 h-5 text-[#05060B]" />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <h3 className="font-orbitron font-bold text-3xl text-white mb-2">{selectedBadge.name}</h3>
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-mono uppercase border bg-gradient-to-r ${getTierColor(selectedBadge.tier)}`}>
+                          {selectedBadge.tier}
+                        </span>
+                        <span className="px-3 py-1 rounded-full text-xs font-mono bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/30">
+                          {getRarityLabel(selectedBadge.rarity)} • {selectedBadge.rarity}% have this
+                        </span>
+                      </div>
+
+                      <p className="font-mono text-[#A6A9B6] mb-6 text-lg">
+                        {selectedBadge.description}
+                      </p>
+
+                      {selectedBadge.unlocked ? (
+                        <div className="cyber-card corner-brackets rounded-lg p-4 bg-[#39FF14]/5 border-[#39FF14]/30">
+                          <div className="flex items-center justify-center gap-2 text-[#39FF14] font-mono text-sm">
+                            <CheckCircle className="w-5 h-5" />
+                            Unlocked on {selectedBadge.unlockedDate}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="cyber-card corner-brackets rounded-lg p-4 bg-[#A6A9B6]/5 border-[#A6A9B6]/30">
+                          <div className="flex items-center justify-center gap-2 text-[#A6A9B6] font-mono text-sm">
+                            <Lock className="w-5 h-5" />
+                            Locked - Complete requirements to unlock
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              ) : (
+                /* Certificates View */
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {certificates.map((cert, index) => (
+                    <div
+                      key={cert.id}
+                      className="cyber-card corner-brackets rounded-lg p-6 transition-all duration-300 hover:border-[#39FF14]/60 hover:translate-y-[-4px] group relative overflow-hidden"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#39FF14]/10 to-transparent rounded-bl-full"></div>
+                      
+                      <div className="flex items-start gap-4 relative z-10">
+                        <div 
+                          className="w-16 h-20 rounded-lg flex items-center justify-center border-2 shadow-lg"
+                          style={{ 
+                            background: `linear-gradient(135deg, ${cert.color}20, ${cert.color}10)`,
+                            borderColor: cert.color,
+                            boxShadow: `0 0 20px ${cert.color}30`
+                          }}
+                        >
+                          <cert.icon className="w-8 h-8" style={{ color: cert.color }} />
+                        </div>
+                        
+                        <div className="flex-1">
+                          <h4 className="font-orbitron font-bold text-lg text-white mb-1 group-hover:text-[#39FF14] transition-colors">
+                            {cert.title}
+                          </h4>
+                          <p className="font-mono text-sm text-[#A6A9B6] mb-2">{cert.issuer}</p>
+                          
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="font-mono text-xs text-[#A6A9B6] bg-[#05060B] px-2 py-1 rounded border border-[#39FF14]/20">
+                              ID: {cert.credentialId}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs text-[#A6A9B6]">
+                              Issued: {cert.date}
+                            </span>
+                            <button className="flex items-center gap-1 font-mono text-xs text-[#39FF14] hover:gap-2 transition-all">
+                              View Credential <ChevronRight className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-[#39FF14]/20 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-[#39FF14] animate-pulse"></div>
+                          <span className="font-mono text-xs text-[#39FF14]">Verified</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-[#0B0E14] border border-[#39FF14]/30 rounded hover:border-[#39FF14] hover:bg-[#39FF14]/10 transition-all">
+                            <Github className="w-4 h-4 text-[#A6A9B6] hover:text-[#39FF14]" />
+                          </button>
+                          <button className="p-2 bg-[#0B0E14] border border-[#39FF14]/30 rounded hover:border-[#39FF14] hover:bg-[#39FF14]/10 transition-all">
+                            <Linkedin className="w-4 h-4 text-[#A6A9B6] hover:text-[#39FF14]" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Add Certificate Placeholder */}
+                  <div className="cyber-card corner-brackets rounded-lg p-6 border-dashed border-2 border-[#39FF14]/30 flex flex-col items-center justify-center min-h-[200px] hover:border-[#39FF14]/60 transition-all cursor-pointer group">
+                    <div className="w-12 h-12 rounded-full bg-[#39FF14]/10 flex items-center justify-center mb-3 group-hover:bg-[#39FF14]/20 transition-all">
+                      <Plus className="w-6 h-6 text-[#39FF14]" />
+                    </div>
+                    <span className="font-mono text-sm text-[#A6A9B6] group-hover:text-[#39FF14] transition-colors">
+                      Add New Certificate
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Stats */}
+            <div className="p-4 border-t border-[#39FF14]/20 bg-[#05060B]/50">
+              <div className="flex items-center justify-between font-mono text-xs text-[#A6A9B6]">
+                <div className="flex items-center gap-4">
+                  <span>Total Badges: {badges.length}</span>
+                  <span>Unlocked: {badges.filter(b => b.unlocked).length}</span>
+                  <span>Certificates: {certificates.length}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>Completion:</span>
+                  <span className="text-[#39FF14]">
+                    {Math.round((badges.filter(b => b.unlocked).length / badges.length) * 100)}%
+                  </span>
                 </div>
               </div>
             </div>

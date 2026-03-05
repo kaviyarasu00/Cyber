@@ -10,6 +10,7 @@ import LeaderboardSection from './sections/LeaderboardSection';
 import MembersSection from './sections/MembersSection';
 import FeedSection from './sections/FeedSection';
 import AIAssistantSection from './sections/AIAssistantSection';
+import ThreatSection from './sections/ThreatSection';
 import FooterSection from './sections/FooterSection';
 import ParticleBackground from './components/ParticleBackground';
 import RealTimeNotifications from './components/RealTimeNotifications';
@@ -68,10 +69,20 @@ function MainApp() {
     };
   }, []);
 
-  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant'];
+  // ✅ Added 'Threat' after 'AI Assistant'
+  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant', 'Threat'];
 
   const scrollToSection = (item: string) => {
-    const id = item.toLowerCase().replace(' ', '-');
+    // Map display name → section id
+    const idMap: Record<string, string> = {
+      'Events': 'events',
+      'Leaderboard': 'leaderboard',
+      'Members': 'members',
+      'Feed': 'feed',
+      'AI Assistant': 'ai-assistant',
+      'Threat': 'threat',
+    };
+    const id = idMap[item] ?? item.toLowerCase().replace(/\s+/g, '-');
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setIsMobileMenuOpen(false);
   };
@@ -105,9 +116,19 @@ function MainApp() {
                   <button
                     key={item}
                     onClick={() => scrollToSection(item)}
-                    className="font-mono text-sm text-[#A6A9B6] hover:text-[#39FF14] transition-colors"
+                    className={`font-mono text-sm transition-colors relative group ${
+                      item === 'Threat'
+                        ? 'text-red-400 hover:text-red-300'
+                        : 'text-[#A6A9B6] hover:text-[#39FF14]'
+                    }`}
                   >
                     {item}
+                    {/* NEW badge on Threat */}
+                    {item === 'Threat' && (
+                      <span className="absolute -top-2 -right-5 px-1 py-0.5 bg-red-500 text-white rounded font-mono text-[8px] font-bold leading-none">
+                        NEW
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -159,12 +180,17 @@ function MainApp() {
                   <button
                     key={item}
                     onClick={() => scrollToSection(item)}
-                    className="w-full text-left px-3 py-3 rounded-md font-mono text-sm text-[#A6A9B6] hover:text-[#39FF14] hover:bg-[#39FF14]/10 transition-all border-l-2 border-transparent hover:border-[#39FF14]"
-                    style={{ 
-                      animationDelay: `${index * 0.05}s`,
-                    }}
+                    className={`w-full text-left px-3 py-3 rounded-md font-mono text-sm transition-all border-l-2 border-transparent flex items-center justify-between ${
+                      item === 'Threat'
+                        ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10 hover:border-red-400'
+                        : 'text-[#A6A9B6] hover:text-[#39FF14] hover:bg-[#39FF14]/10 hover:border-[#39FF14]'
+                    }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    {item}
+                    <span>{item}</span>
+                    {item === 'Threat' && (
+                      <span className="px-1.5 py-0.5 bg-red-500 text-white rounded font-mono text-[9px] font-bold">NEW</span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -202,6 +228,7 @@ function MainApp() {
         <MembersSection />
         <FeedSection />
         <AIAssistantSection />
+        <ThreatSection />        {/* ✅ Threat Scanner — added after AI Assistant */}
         <FooterSection />
       </main>
     </div>
@@ -232,7 +259,6 @@ function AppContent() {
     );
   }
 
-  // Render Login3D without onLogin prop - it uses useAuth internally
   if (!isAuthenticated) {
     return <Login3D />;
   }
