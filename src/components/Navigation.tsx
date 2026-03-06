@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Shield, Zap, AlertTriangle, Gamepad2 } from 'lucide-react'; // ✅ Added Gamepad2 icon
+import { Menu, X, Shield, Zap, AlertTriangle } from 'lucide-react';
 
 interface NavigationProps {
   onLoginClick: () => void;
@@ -10,6 +10,15 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+
+  const navLinks = [
+    { label: 'Events',       href: '#events' },
+    { label: 'Leaderboard',  href: '#leaderboard' },
+    { label: 'Members',      href: '#members' },
+    { label: 'Feed',         href: '#feed' },
+    { label: 'AI Assistant', href: '#ai-assistant' },
+    { label: 'Threat',       href: '#threat', isNew: true, isDanger: true },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,20 +45,12 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
     return () => observer.disconnect();
   }, []);
 
-  const navLinks = [
-    { label: 'Events',       href: '#events' },
-    { label: 'Leaderboard',  href: '#leaderboard' },
-    { label: 'Members',      href: '#members' },
-    { label: 'Feed',         href: '#feed' },
-    { label: 'AI Assistant', href: '#ai-assistant' },
-    // ✅ Threat Scanner — added after AI Assistant
-    { label: 'Threat',       href: '#threat', isNew: true, isDanger: true },
-    // ✅ Cyber Games — added after Threat
-    { label: 'Games',        href: '#games', isHot: true, hasIcon: true },
-  ];
-
   const scrollToSection = (href: string) => {
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    const id = href.replace('#', '');
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -91,17 +92,12 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
                     className={`relative flex items-center gap-1.5 font-mono text-sm transition-colors duration-300 group ${
                       link.isDanger
                         ? isActive ? 'text-red-400' : 'text-red-400/70 hover:text-red-400'
-                        : link.label === 'Games'
-                        ? isActive ? 'text-[#FF00FF]' : 'text-[#FF00FF]/70 hover:text-[#FF00FF]'
                         : isActive ? 'text-[#39FF14]' : 'text-[#A6A9B6] hover:text-[#39FF14]'
                     }`}
                   >
-                    {/* Icons */}
+                    {/* Icon for Threat */}
                     {link.isDanger && (
                       <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
-                    )}
-                    {link.hasIcon && (
-                      <Gamepad2 className="w-3.5 h-3.5 flex-shrink-0" />
                     )}
 
                     {link.label}
@@ -112,20 +108,14 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
                         NEW
                       </span>
                     )}
-                    {/* HOT badge */}
-                    {link.isHot && (
-                      <span className="px-1 py-0.5 bg-[#FF00FF] text-white rounded font-mono text-[8px] font-bold leading-none">
-                        HOT
-                      </span>
-                    )}
 
                     {/* Underline hover effect */}
-                    <span className={`absolute -bottom-1 left-0 h-[2px] transition-all duration-300 shadow-[0_0_8px_currentColor] ${
+                    <span className={`absolute -bottom-1 left-0 h-[2px] transition-all duration-300 ${
                       isActive ? 'w-full' : 'w-0 group-hover:w-full'
                     } ${
-                      link.isDanger ? 'bg-red-400 shadow-[0_0_8px_#ff2d2d]' 
-                      : link.label === 'Games' ? 'bg-[#FF00FF] shadow-[0_0_8px_#FF00FF]'
-                      : 'bg-[#39FF14] shadow-[0_0_8px_#39FF14]'
+                      link.isDanger
+                        ? 'bg-red-400 shadow-[0_0_8px_#ff2d2d]'
+                        : 'bg-[#39FF14] shadow-[0_0_8px_#39FF14]'
                     }`} />
                   </button>
                 );
@@ -180,23 +170,15 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
               className={`flex items-center gap-3 font-orbitron text-2xl transition-colors duration-300 ${
                 link.isDanger
                   ? 'text-red-400/80 hover:text-red-400'
-                  : link.label === 'Games'
-                  ? 'text-[#FF00FF]/80 hover:text-[#FF00FF]'
                   : 'text-white hover:text-[#39FF14]'
               }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {link.isDanger && <AlertTriangle className="w-5 h-5" />}
-              {link.hasIcon && <Gamepad2 className="w-5 h-5" />}
               {link.label}
               {link.isNew && (
                 <span className="px-2 py-1 bg-red-500 text-white rounded font-mono text-[10px] font-bold">
                   NEW
-                </span>
-              )}
-              {link.isHot && (
-                <span className="px-2 py-1 bg-[#FF00FF] text-white rounded font-mono text-[10px] font-bold">
-                  HOT
                 </span>
               )}
             </button>

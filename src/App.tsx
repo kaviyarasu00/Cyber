@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Menu, X } from 'lucide-react';
 import Login3D from './components/Login3D';
@@ -11,12 +12,11 @@ import MembersSection from './sections/MembersSection';
 import FeedSection from './sections/FeedSection';
 import AIAssistantSection from './sections/AIAssistantSection';
 import ThreatSection from './sections/ThreatSection';
-import GameSection from './sections/GameSection'; // ✅ Added GameSection import
 import FooterSection from './sections/FooterSection';
 import ParticleBackground from './components/ParticleBackground';
 import RealTimeNotifications from './components/RealTimeNotifications';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 // Main App Content (shown after login)
 function MainApp() {
@@ -70,11 +70,9 @@ function MainApp() {
     };
   }, []);
 
-  // ✅ Added 'Games' after 'Threat'
-  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant', 'Threat', 'Games'];
+  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant', 'Threat'];
 
   const scrollToSection = (item: string) => {
-    // Map display name → section id
     const idMap: Record<string, string> = {
       'Events': 'events',
       'Leaderboard': 'leaderboard',
@@ -82,10 +80,34 @@ function MainApp() {
       'Feed': 'feed',
       'AI Assistant': 'ai-assistant',
       'Threat': 'threat',
-      'Games': 'games', // ✅ Added Games mapping
     };
+
     const id = idMap[item] ?? item.toLowerCase().replace(/\s+/g, '-');
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Find the ScrollTrigger associated with this section element (pinned sections)
+    const allTriggers = ScrollTrigger.getAll();
+    const sectionTrigger = allTriggers.find(
+      st => st.vars.pin && (st.trigger === el || st.pin === el)
+    );
+
+    if (sectionTrigger) {
+      // For pinned sections, scroll to their ScrollTrigger start position
+      gsap.to(window, {
+        scrollTo: { y: sectionTrigger.start, autoKill: false },
+        duration: 0.9,
+        ease: 'power2.inOut',
+      });
+    } else {
+      // For non-pinned sections, use offsetTop directly
+      gsap.to(window, {
+        scrollTo: { y: el.offsetTop - 64, autoKill: false },
+        duration: 0.9,
+        ease: 'power2.inOut',
+      });
+    }
+
     setIsMobileMenuOpen(false);
   };
 
@@ -121,22 +143,13 @@ function MainApp() {
                     className={`font-mono text-sm transition-colors relative group ${
                       item === 'Threat'
                         ? 'text-red-400 hover:text-red-300'
-                        : item === 'Games'
-                        ? 'text-[#FF00FF] hover:text-[#FF00FF]/80' // ✅ Games gets magenta color
                         : 'text-[#A6A9B6] hover:text-[#39FF14]'
                     }`}
                   >
                     {item}
-                    {/* NEW badge on Threat */}
                     {item === 'Threat' && (
                       <span className="absolute -top-2 -right-5 px-1 py-0.5 bg-red-500 text-white rounded font-mono text-[8px] font-bold leading-none">
                         NEW
-                      </span>
-                    )}
-                    {/* HOT badge on Games */}
-                    {item === 'Games' && (
-                      <span className="absolute -top-2 -right-6 px-1 py-0.5 bg-[#FF00FF] text-white rounded font-mono text-[8px] font-bold leading-none">
-                        HOT
                       </span>
                     )}
                   </button>
@@ -147,7 +160,7 @@ function MainApp() {
               <div className="flex items-center gap-2 sm:gap-4">
                 <RealTimeNotifications />
                 
-                {/* User info - Hidden on small mobile */}
+                {/* User info */}
                 <div className="hidden sm:flex items-center gap-3">
                   <div className="text-right">
                     <p className="font-mono text-sm text-white">{user?.name}</p>
@@ -184,7 +197,6 @@ function MainApp() {
             }`}
           >
             <div className="px-4 pb-4 pt-2 border-t border-[#39FF14]/20 bg-[#05060B]/95">
-              {/* Mobile Nav Links */}
               <div className="space-y-1">
                 {navItems.map((item, index) => (
                   <button
@@ -193,8 +205,6 @@ function MainApp() {
                     className={`w-full text-left px-3 py-3 rounded-md font-mono text-sm transition-all border-l-2 border-transparent flex items-center justify-between ${
                       item === 'Threat'
                         ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10 hover:border-red-400'
-                        : item === 'Games'
-                        ? 'text-[#FF00FF] hover:text-[#FF00FF] hover:bg-[#FF00FF]/10 hover:border-[#FF00FF]'
                         : 'text-[#A6A9B6] hover:text-[#39FF14] hover:bg-[#39FF14]/10 hover:border-[#39FF14]'
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
@@ -202,9 +212,6 @@ function MainApp() {
                     <span>{item}</span>
                     {item === 'Threat' && (
                       <span className="px-1.5 py-0.5 bg-red-500 text-white rounded font-mono text-[9px] font-bold">NEW</span>
-                    )}
-                    {item === 'Games' && (
-                      <span className="px-1.5 py-0.5 bg-[#FF00FF] text-white rounded font-mono text-[9px] font-bold">HOT</span>
                     )}
                   </button>
                 ))}
@@ -244,7 +251,6 @@ function MainApp() {
         <FeedSection />
         <AIAssistantSection />
         <ThreatSection />
-        <GameSection />        {/* ✅ Cyber Arcade — added after Threat */}
         <FooterSection />
       </main>
     </div>
