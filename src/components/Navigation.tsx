@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Shield, Zap, AlertTriangle } from 'lucide-react';
+import { Menu, X, Shield, Zap, AlertTriangle, Gamepad2 } from 'lucide-react';
 
 interface NavigationProps {
   onLoginClick: () => void;
@@ -11,12 +11,14 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
 
+  // UPDATED: Added Game to navLinks
   const navLinks = [
     { label: 'Events',       href: '#events' },
     { label: 'Leaderboard',  href: '#leaderboard' },
     { label: 'Members',      href: '#members' },
     { label: 'Feed',         href: '#feed' },
     { label: 'AI Assistant', href: '#ai-assistant' },
+    { label: 'Game',         href: '#game', isNew: true, icon: Gamepad2, color: 'purple' }, // ADDED GAME
     { label: 'Threat',       href: '#threat', isNew: true, isDanger: true },
   ];
 
@@ -54,6 +56,23 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
     setIsMobileMenuOpen(false);
   };
 
+  // Helper to get color classes
+  const getColorClasses = (link: typeof navLinks[0], isActive: boolean) => {
+    if (link.isDanger) {
+      return isActive ? 'text-red-400' : 'text-red-400/70 hover:text-red-400';
+    }
+    if (link.color === 'purple') {
+      return isActive ? 'text-purple-400' : 'text-purple-400/70 hover:text-purple-400';
+    }
+    return isActive ? 'text-[#39FF14]' : 'text-[#A6A9B6] hover:text-[#39FF14]';
+  };
+
+  const getUnderlineColor = (link: typeof navLinks[0]) => {
+    if (link.isDanger) return 'bg-red-400 shadow-[0_0_8px_#ff2d2d]';
+    if (link.color === 'purple') return 'bg-purple-400 shadow-[0_0_8px_#a855f7]';
+    return 'bg-[#39FF14] shadow-[0_0_8px_#39FF14]';
+  };
+
   return (
     <>
       <nav
@@ -85,38 +104,37 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
             <div className="hidden lg:flex items-center gap-6">
               {navLinks.map(link => {
                 const isActive = activeSection === link.href.replace('#', '');
+                const Icon = link.icon;
+                
                 return (
                   <button
                     key={link.label}
                     onClick={() => scrollToSection(link.href)}
-                    className={`relative flex items-center gap-1.5 font-mono text-sm transition-colors duration-300 group ${
-                      link.isDanger
-                        ? isActive ? 'text-red-400' : 'text-red-400/70 hover:text-red-400'
-                        : isActive ? 'text-[#39FF14]' : 'text-[#A6A9B6] hover:text-[#39FF14]'
-                    }`}
+                    className={`relative flex items-center gap-1.5 font-mono text-sm transition-colors duration-300 group ${getColorClasses(link, isActive)}`}
                   >
-                    {/* Icon for Threat */}
+                    {/* Icon */}
                     {link.isDanger && (
                       <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                    )}
+                    {Icon && !link.isDanger && (
+                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                     )}
 
                     {link.label}
 
-                    {/* NEW badge */}
+                    {/* Badge */}
                     {link.isNew && (
-                      <span className="px-1 py-0.5 bg-red-500 text-white rounded font-mono text-[8px] font-bold leading-none">
-                        NEW
+                      <span className={`px-1 py-0.5 rounded font-mono text-[8px] font-bold leading-none ${
+                        link.color === 'purple' ? 'bg-purple-500 text-white' : 'bg-red-500 text-white'
+                      }`}>
+                        {link.color === 'purple' ? 'PLAY' : 'NEW'}
                       </span>
                     )}
 
                     {/* Underline hover effect */}
                     <span className={`absolute -bottom-1 left-0 h-[2px] transition-all duration-300 ${
                       isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    } ${
-                      link.isDanger
-                        ? 'bg-red-400 shadow-[0_0_8px_#ff2d2d]'
-                        : 'bg-[#39FF14] shadow-[0_0_8px_#39FF14]'
-                    }`} />
+                    } ${getUnderlineColor(link)}`} />
                   </button>
                 );
               })}
@@ -163,26 +181,35 @@ export default function Navigation({ onLoginClick, onSignupClick }: NavigationPr
 
         {/* Menu content */}
         <div className="relative h-full flex flex-col items-center justify-center gap-7">
-          {navLinks.map((link, index) => (
-            <button
-              key={link.label}
-              onClick={() => scrollToSection(link.href)}
-              className={`flex items-center gap-3 font-orbitron text-2xl transition-colors duration-300 ${
-                link.isDanger
-                  ? 'text-red-400/80 hover:text-red-400'
-                  : 'text-white hover:text-[#39FF14]'
-              }`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              {link.isDanger && <AlertTriangle className="w-5 h-5" />}
-              {link.label}
-              {link.isNew && (
-                <span className="px-2 py-1 bg-red-500 text-white rounded font-mono text-[10px] font-bold">
-                  NEW
-                </span>
-              )}
-            </button>
-          ))}
+          {navLinks.map((link, index) => {
+            const Icon = link.icon;
+            
+            return (
+              <button
+                key={link.label}
+                onClick={() => scrollToSection(link.href)}
+                className={`flex items-center gap-3 font-orbitron text-2xl transition-colors duration-300 ${
+                  link.isDanger
+                    ? 'text-red-400/80 hover:text-red-400'
+                    : link.color === 'purple'
+                      ? 'text-purple-400/80 hover:text-purple-400'
+                      : 'text-white hover:text-[#39FF14]'
+                }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {link.isDanger && <AlertTriangle className="w-5 h-5" />}
+                {Icon && !link.isDanger && <Icon className="w-5 h-5" />}
+                {link.label}
+                {link.isNew && (
+                  <span className={`px-2 py-1 rounded font-mono text-[10px] font-bold ${
+                    link.color === 'purple' ? 'bg-purple-500 text-white' : 'bg-red-500 text-white'
+                  }`}>
+                    {link.color === 'purple' ? 'PLAY' : 'NEW'}
+                  </span>
+                )}
+              </button>
+            );
+          })}
 
           {/* Auth buttons */}
           <div className="flex flex-col gap-4 mt-8">

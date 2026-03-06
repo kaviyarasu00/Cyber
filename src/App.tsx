@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Gamepad2 } from 'lucide-react';
 import Login3D from './components/Login3D';
 import HeroSection from './sections/HeroSection';
 import EventsSection from './sections/EventsSection';
@@ -12,6 +12,7 @@ import MembersSection from './sections/MembersSection';
 import FeedSection from './sections/FeedSection';
 import AIAssistantSection from './sections/AIAssistantSection';
 import ThreatSection from './sections/ThreatSection';
+import GameSection from './sections/GameSection'; // IMPORT GAME SECTION
 import FooterSection from './sections/FooterSection';
 import ParticleBackground from './components/ParticleBackground';
 import RealTimeNotifications from './components/RealTimeNotifications';
@@ -70,7 +71,8 @@ function MainApp() {
     };
   }, []);
 
-  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant', 'Threat'];
+  // UPDATED: Added 'Game' to nav items
+  const navItems = ['Events', 'Leaderboard', 'Members', 'Feed', 'AI Assistant', 'Game', 'Threat'];
 
   const scrollToSection = (item: string) => {
     const idMap: Record<string, string> = {
@@ -79,6 +81,7 @@ function MainApp() {
       'Members': 'members',
       'Feed': 'feed',
       'AI Assistant': 'ai-assistant',
+      'Game': 'game', // ADDED GAME MAPPING
       'Threat': 'threat',
     };
 
@@ -140,18 +143,37 @@ function MainApp() {
                   <button
                     key={item}
                     onClick={() => scrollToSection(item)}
-                    className={`font-mono text-sm transition-colors relative group ${
+                    className={`relative font-mono text-sm transition-colors group flex items-center gap-1.5 ${
                       item === 'Threat'
                         ? 'text-red-400 hover:text-red-300'
-                        : 'text-[#A6A9B6] hover:text-[#39FF14]'
+                        : item === 'Game'
+                          ? 'text-purple-400 hover:text-purple-300' // Purple for Game
+                          : 'text-[#A6A9B6] hover:text-[#39FF14]'
                     }`}
                   >
+                    {/* Game icon */}
+                    {item === 'Game' && <Gamepad2 className="w-4 h-4" />}
+                    
                     {item}
+                    
+                    {/* Badges */}
                     {item === 'Threat' && (
-                      <span className="absolute -top-2 -right-5 px-1 py-0.5 bg-red-500 text-white rounded font-mono text-[8px] font-bold leading-none">
+                      <span className="absolute -top-2 -right-6 px-1 py-0.5 bg-red-500 text-white rounded font-mono text-[8px] font-bold leading-none">
                         NEW
                       </span>
                     )}
+                    {item === 'Game' && (
+                      <span className="absolute -top-2 -right-6 px-1 py-0.5 bg-purple-500 text-white rounded font-mono text-[8px] font-bold leading-none">
+                        PLAY
+                      </span>
+                    )}
+                    
+                    {/* Underline effect */}
+                    <span className={`absolute -bottom-1 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-300 ${
+                      item === 'Threat' ? 'bg-red-400' : 
+                      item === 'Game' ? 'bg-purple-400' : 
+                      'bg-[#39FF14]'
+                    }`} />
                   </button>
                 ))}
               </div>
@@ -193,7 +215,7 @@ function MainApp() {
           {/* Mobile Menu */}
           <div 
             className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-              isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+              isMobileMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
             <div className="px-4 pb-4 pt-2 border-t border-[#39FF14]/20 bg-[#05060B]/95">
@@ -205,13 +227,21 @@ function MainApp() {
                     className={`w-full text-left px-3 py-3 rounded-md font-mono text-sm transition-all border-l-2 border-transparent flex items-center justify-between ${
                       item === 'Threat'
                         ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10 hover:border-red-400'
-                        : 'text-[#A6A9B6] hover:text-[#39FF14] hover:bg-[#39FF14]/10 hover:border-[#39FF14]'
+                        : item === 'Game'
+                          ? 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 hover:border-purple-400'
+                          : 'text-[#A6A9B6] hover:text-[#39FF14] hover:bg-[#39FF14]/10 hover:border-[#39FF14]'
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <span>{item}</span>
+                    <span className="flex items-center gap-2">
+                      {item === 'Game' && <Gamepad2 className="w-4 h-4" />}
+                      {item}
+                    </span>
                     {item === 'Threat' && (
                       <span className="px-1.5 py-0.5 bg-red-500 text-white rounded font-mono text-[9px] font-bold">NEW</span>
+                    )}
+                    {item === 'Game' && (
+                      <span className="px-1.5 py-0.5 bg-purple-500 text-white rounded font-mono text-[9px] font-bold">PLAY</span>
                     )}
                   </button>
                 ))}
@@ -250,6 +280,7 @@ function MainApp() {
         <MembersSection />
         <FeedSection />
         <AIAssistantSection />
+        <GameSection /> {/* ADDED GAME SECTION HERE */}
         <ThreatSection />
         <FooterSection />
       </main>
